@@ -38,7 +38,19 @@
     text-align: center;
     text-shadow: 0 2px 0 rgba(255,255,255,.6);
   }
-  svg { height: min(80vh, 660px); width: auto; max-width: 96vw; overflow: visible; }
+  body { padding-bottom: 64px; }
+  svg {
+    height: min(calc(100vh - 140px), 660px);
+    height: min(calc(100dvh - 140px), 660px);
+    min-height: 240px;
+    width: auto; max-width: 96vw; overflow: visible;
+    transition: height .35s ease;
+  }
+  body.abierto { padding-bottom: 232px; }
+  body.abierto svg {
+    height: min(calc(100vh - 330px), 620px);
+    height: min(calc(100dvh - 330px), 620px);
+  }
 
   #ramo { transform-origin: 200px 440px; animation: mecer 5s ease-in-out infinite; }
   @keyframes mecer {
@@ -73,6 +85,21 @@
     100% { transform: translate(0, 115vh); opacity: 0; }
   }
   h1, svg { position: relative; z-index: 1; }
+
+  #musica {
+    position: fixed; bottom: 10px; left: 50%; transform: translateX(-50%);
+    width: min(94vw, 380px); z-index: 5;
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+  }
+  #panel { width: 100%; display: none; border-radius: 14px; overflow: hidden; box-shadow: 0 6px 18px rgba(122,59,0,.3); }
+  #panel iframe { display: block; width: 100%; height: 152px; border: 0; }
+  #btnMusica {
+    font-family: "Pacifico", "Brush Script MT", cursive;
+    font-size: 1rem; color: #fffaf0; background: #d63b66;
+    border: 0; border-radius: 999px; padding: 10px 22px; cursor: pointer;
+    box-shadow: 0 4px 12px rgba(169,33,72,.4);
+  }
+  #btnMusica:active { transform: scale(.97); }
   @media (prefers-reduced-motion: reduce) {
     #ramo, .mensaje, .cae, .palabra { animation: none; }
   }
@@ -150,7 +177,36 @@
           paint-order="stroke">(no serás espectadora mi vida)</text>
   </svg>
 
+  <!-- Reproductor de la canción -->
+  <div id="musica">
+    <div id="panel"></div>
+    <button id="btnMusica" type="button">🎵 Nuestra canción</button>
+  </div>
+
 <script>
+// ID de la canción en Spotify (la parte final del link: open.spotify.com/track/ESTE_ID)
+const CANCION_SPOTIFY = "6pTZ8Oy1xGKGCE4saVScoy"; // Give Me Your Forever - Zack Tabudlo
+
+(function () {
+  const btn = document.getElementById("btnMusica");
+  const panel = document.getElementById("panel");
+  let cargado = false;
+  btn.addEventListener("click", () => {
+    if (!cargado) {
+      const f = document.createElement("iframe");
+      f.src = "https://open.spotify.com/embed/track/" + CANCION_SPOTIFY + "?utm_source=generator&theme=0";
+      f.allow = "autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture";
+      f.title = "Give Me Your Forever - Zack Tabudlo";
+      panel.appendChild(f);
+      cargado = true;
+    }
+    const abrir = panel.style.display !== "block";
+    panel.style.display = abrir ? "block" : "none";
+    document.body.classList.toggle("abierto", abrir);
+    btn.textContent = abrir ? "Ocultar reproductor" : "🎵 Nuestra canción";
+  });
+})();
+
 (function () {
   const NS = "http://www.w3.org/2000/svg";
   const el = (tag, attrs, parent) => {
