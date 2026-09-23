@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Día 3 · Para mi Kathe 💛</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Quicksand:wght@600&family=Caveat:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --fondo-1: #fff8dc;
+    --fondo-2: #ffdf80;
+    --texto: #7a4a00;
+    --tallo: #3f8a3a;
+    --tallo-osc: #2f6d2c;
+    --lazo: #d63b66;
+    --lazo-osc: #a92148;
+    --letras: #fffaf0;
+  }
+  * { box-sizing: border-box; margin: 0; }
+  html, body { height: 100%; }
+  body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 12px;
+    background: radial-gradient(circle at 50% 35%, var(--fondo-1), var(--fondo-2) 75%);
+    color: var(--texto);
+    font-family: "Pacifico", "Brush Script MT", cursive;
+    overflow: hidden;
+  }
+  h1 {
+    font-weight: 400;
+    font-size: clamp(1.1rem, 4.2vw, 1.8rem);
+    text-align: center;
+    text-shadow: 0 2px 0 rgba(255,255,255,.6);
+  }
+  body { padding-bottom: 64px; }
+  svg {
+    height: min(calc(100vh - 200px), 560px);
+    height: min(calc(100dvh - 200px), 560px);
+    min-height: 200px;
+    width: auto; max-width: 96vw; overflow: visible;
+    transition: height .35s ease;
+  }
+  body.abierto { padding-bottom: 232px; }
+  body.abierto svg {
+    height: min(calc(100vh - 330px), 620px);
+    height: min(calc(100dvh - 330px), 620px);
+  }
+
+  #ramo { transform-origin: 200px 440px; animation: mecer 5s ease-in-out infinite; }
+  @keyframes mecer {
+    0%, 100% { transform: rotate(-1.4deg); }
+    50%      { transform: rotate(1.4deg); }
+  }
+  .mensaje { transform-box: fill-box; transform-origin: center; animation: latido 2.4s ease-in-out infinite; }
+  @keyframes latido {
+    0%, 100% { transform: scale(1); }
+    50%      { transform: scale(1.04); }
+  }
+  .cae {
+    position: fixed; top: -40px; opacity: 0; pointer-events: none;
+    animation: caer linear infinite;
+  }
+  @keyframes caer {
+    0%   { transform: translateY(0) rotate(0); opacity: 0; }
+    10%  { opacity: .85; }
+    100% { transform: translateY(112vh) rotate(360deg); opacity: 0; }
+  }
+  .palabra {
+    position: fixed; top: -60px; z-index: 0; opacity: 0; pointer-events: none;
+    white-space: nowrap;
+    font-family: "Pacifico", "Brush Script MT", cursive;
+    text-shadow: 0 1px 0 rgba(255,255,255,.75), 0 0 8px rgba(255,255,255,.5);
+    animation: llover linear infinite;
+  }
+  @keyframes llover {
+    0%   { transform: translate(0, 0); opacity: 0; }
+    10%  { opacity: .9; }
+    50%  { transform: translate(var(--dx), 55vh); }
+    100% { transform: translate(0, 115vh); opacity: 0; }
+  }
+  h1, svg { position: relative; z-index: 1; }
+
+  #musica {
+    position: fixed; bottom: 10px; left: 50%; transform: translateX(-50%);
+    width: min(94vw, 380px); z-index: 5;
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+  }
+  #panel { width: 100%; display: none; border-radius: 14px; overflow: hidden; box-shadow: 0 6px 18px rgba(122,59,0,.3); }
+  #panel iframe { display: block; width: 100%; height: 152px; border: 0; }
+  #btnMusica {
+    font-family: "Pacifico", "Brush Script MT", cursive;
+    font-size: 1rem; color: #fffaf0; background: #d63b66;
+    border: 0; border-radius: 999px; padding: 10px 22px; cursor: pointer;
+    box-shadow: 0 4px 12px rgba(169,33,72,.4);
+  }
+  #btnMusica:active { transform: scale(.97); }
+  #musica .botones { display: flex; gap: 8px; justify-content: center; }
+  #musica button { font-size: .95rem; padding: 10px 16px; white-space: nowrap; }
+  #btnCarta { background: #b8570a; box-shadow: 0 4px 12px rgba(122,59,0,.4); }
+  #musica { z-index: 20; }
+
+  /* Carta */
+  #carta {
+    position: fixed; inset: 0; z-index: 10; display: none;
+    align-items: center; justify-content: center;
+    padding: 14px 14px 78px;
+    background: rgba(90,40,0,.5);
+    -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px);
+  }
+  body.abierto #carta { padding-bottom: 250px; }
+  #carta.on { display: flex; }
+  #carta .marco { position: relative; width: min(100%, 540px); max-height: 100%; display: flex; }
+  #carta .hoja {
+    width: 100%; overflow-y: auto; -webkit-overflow-scrolling: touch;
+    background: #fffaf0; border: 2px solid #f3b9c8; border-radius: 16px;
+    padding: 34px 22px 30px; box-shadow: 0 10px 30px rgba(60,20,0,.4);
+  }
+  #carta h2 {
+    font-family: "Pacifico", "Brush Script MT", cursive; font-weight: 400;
+    text-align: center; color: #c2185b; font-size: 1.5rem; margin-bottom: 16px;
+  }
+  #carta p {
+    font-family: "Caveat", "Segoe Script", "Comic Sans MS", cursive;
+    font-size: 1.4rem; line-height: 1.35; color: #5a3300; margin-bottom: 14px;
+    opacity: 0; transform: translateY(14px);
+    transition: opacity .9s ease, transform .9s ease;
+  }
+  #carta p.vis { opacity: 1; transform: none; }
+  #carta p.fin {
+    font-family: "Pacifico", "Brush Script MT", cursive; font-size: 1.35rem;
+    text-align: center; color: #c2185b; margin: 22px 0 4px;
+  }
+  #cerrarCarta {
+    position: absolute; top: 8px; right: 10px; z-index: 2;
+    width: 32px; height: 32px; border: 0; border-radius: 50%;
+    background: #f3b9c8; color: #7a1f3d; font-size: 1rem; cursor: pointer;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    #carta p { opacity: 1; transform: none; transition: none; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    #ramo, .mensaje, .cae, .palabra { animation: none; }
+  }
+
+  .insignia {
+    font-family: "Quicksand", sans-serif; font-weight: 600; font-size: .8rem;
+    color: #b8570a; background: #fff2c4; border: 1px solid #ffcf4d;
+    padding: 3px 14px; border-radius: 999px; position: relative; z-index: 1;
+  }
+
+  .luciernaga {
+    position: fixed; width: 6px; height: 6px; border-radius: 50%;
+    background: #ffe066; box-shadow: 0 0 8px 3px rgba(255,224,102,.8);
+    opacity: 0; pointer-events: none; animation: flotar linear infinite;
+  }
+  @keyframes flotar {
+    0%   { opacity: 0; transform: translate(0,0); }
+    15%  { opacity: .9; }
+    50%  { transform: translate(var(--dx), -40vh); }
+    85%  { opacity: .7; }
+    100% { opacity: 0; transform: translate(calc(var(--dx) * 1.6), -85vh); }
+  }
+
+  #jardin {
+    position: relative; z-index: 1; display: flex; gap: 10px;
+    justify-content: center; flex-wrap: wrap; max-width: 92vw; margin-top: 2px;
+  }
+  .capullo {
+    font-size: 1.5rem; background: radial-gradient(circle at 35% 30%, #fff3b0, #ffcf3f);
+    border: 2px solid #f2a900; border-radius: 50%; width: 46px; height: 46px;
+    cursor: pointer; box-shadow: 0 3px 8px rgba(122,59,0,.3);
+    transition: transform .2s ease;
+  }
+  .capullo:active { transform: scale(.88); }
+  .burbuja {
+    position: fixed; z-index: 30; max-width: 220px;
+    background: #fffaf0; color: #7a1f3d; border: 2px solid #f3b9c8;
+    border-radius: 14px; padding: 10px 14px; font-family: "Caveat", cursive;
+    font-size: 1.25rem; line-height: 1.2; text-align: center;
+    box-shadow: 0 6px 16px rgba(60,20,0,.3);
+    opacity: 0; transform: translate(-50%, -10px) scale(.9);
+    transition: opacity .25s ease, transform .25s ease; pointer-events: none;
+  }
+  .burbuja.on { opacity: 1; transform: translate(-50%, -18px) scale(1); }
+
+  #suenos {
+    margin-top: 18px; padding-top: 14px; border-top: 1px dashed #f3b9c8;
+  }
+  #suenos h3 {
+    font-family: "Pacifico", cursive; font-weight: 400; font-size: 1.15rem;
+    color: #b8570a; margin-bottom: 10px; text-align: center;
+  }
+  #suenos label {
+    display: flex; align-items: center; gap: 8px; margin-bottom: 8px;
+    font-family: "Quicksand", sans-serif; font-size: .95rem; color: #5a3300;
+  }
+  #suenos input { width: 18px; height: 18px; accent-color: #d63b66; flex: none; }
+  #suenos input:checked + span { text-decoration: line-through; opacity: .6; }
+  #suenosNota { font-family: "Quicksand", sans-serif; font-size: .8rem; color: #a97a3d; text-align: center; margin-top: 8px; }
+
+  #btnFinal {
+    background: linear-gradient(135deg, #ff8fab, #ffd21f); color: #5a3300;
+    font-weight: 700;
+  }
+  #finalOverlay {
+    position: fixed; inset: 0; z-index: 40; display: none;
+    align-items: center; justify-content: center; padding: 24px;
+    background: rgba(90,40,0,.55); backdrop-filter: blur(4px);
+  }
+  #finalOverlay.on { display: flex; }
+  #finalOverlay .caja {
+    background: #fffaf0; border-radius: 18px; padding: 30px 22px;
+    max-width: 380px; text-align: center; box-shadow: 0 10px 30px rgba(60,20,0,.4);
+  }
+  #finalOverlay p {
+    font-family: "Pacifico", cursive; font-size: 1.4rem; color: #c2185b; line-height: 1.4;
+  }
+  #finalOverlay button {
+    margin-top: 18px; border: 0; border-radius: 999px; padding: 9px 20px;
+    background: #d63b66; color: #fffaf0; font-family: "Quicksand"; font-weight: 600; cursor: pointer;
+  }
+  .confeti {
+    position: fixed; top: -20px; z-index: 45; pointer-events: none;
+    animation: confetear ease-in forwards;
+  }
+  @keyframes confetear {
+    0%   { transform: translate(0,0) rotate(0); opacity: 1; }
+    100% { transform: translate(var(--dx), 100vh) rotate(var(--rot)); opacity: 0; }
+  }
+</style>
+</head>
+<body>
+  <span class="insignia">Día 3 de 3 · Final 💛</span>
+  <h1>Nuestro para siempre</h1>
+
+  <svg viewBox="0 0 400 620" role="img" aria-label="Ramo de flores amarillas envuelto en papel rosado. Dice: Te amo mi Kathe, no serás espectadora mi vida">
+    <defs>
+      <linearGradient id="pet1" x1="0" y1="1" x2="0" y2="0">
+        <stop offset="0" stop-color="#ffb800"/><stop offset="1" stop-color="#ffe45c"/>
+      </linearGradient>
+      <linearGradient id="pet2" x1="0" y1="1" x2="0" y2="0">
+        <stop offset="0" stop-color="#f29a00"/><stop offset="1" stop-color="#ffd21f"/>
+      </linearGradient>
+      <linearGradient id="papelF" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#f9a3b8"/><stop offset="1" stop-color="#ec7a99"/>
+      </linearGradient>
+      <linearGradient id="papelB" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#fbd0da"/><stop offset="1" stop-color="#f4a9bb"/>
+      </linearGradient>
+      <radialGradient id="brillo" cx="50%" cy="50%" r="50%">
+        <stop offset="0" stop-color="#fff6b8" stop-opacity=".9"/>
+        <stop offset="1" stop-color="#fff6b8" stop-opacity="0"/>
+      </radialGradient>
+      <filter id="sombra" x="-20%" y="-20%" width="140%" height="140%">
+        <feDropShadow dx="0" dy="6" stdDeviation="7" flood-color="#7a3b00" flood-opacity=".28"/>
+      </filter>
+    </defs>
+
+    <!-- Resplandor detrás del ramo -->
+    <circle cx="200" cy="210" r="210" fill="url(#brillo)"/>
+
+    <!-- Papel de atrás -->
+    <path d="M10 268 L200 320 L390 268 L292 596 L108 596 Z" fill="url(#papelB)" filter="url(#sombra)"/>
+
+    <!-- Ramo (tallos, hojas y flores se dibujan con el script de abajo) -->
+    <g id="ramo"></g>
+
+    <!-- Papel del frente -->
+    <g filter="url(#sombra)">
+      <path d="M20 285 L200 340 L380 285 L285 594 Q200 612 115 594 Z" fill="url(#papelF)"/>
+    </g>
+    <!-- Pliegues de luz -->
+    <path d="M20 285 L200 340 L150 598 L115 594 Z" fill="#fff" opacity=".16"/>
+    <path d="M380 285 L200 340 L250 598 L285 594 Z" fill="#b83b62" opacity=".12"/>
+    <path d="M20 285 L200 340 L380 285" fill="none" stroke="#fff" stroke-opacity=".7" stroke-width="3" stroke-linejoin="round"/>
+    <path d="M200 340 L200 604" fill="none" stroke="#fff" stroke-opacity=".18" stroke-width="2"/>
+
+    <!-- Lazo -->
+    <g>
+      <path d="M192 356 L166 418 L186 408 L196 428 Z" fill="var(--lazo-osc)"/>
+      <path d="M208 356 L234 418 L214 408 L204 428 Z" fill="var(--lazo-osc)"/>
+      <ellipse cx="164" cy="352" rx="34" ry="17" transform="rotate(-20 164 352)" fill="var(--lazo)"/>
+      <ellipse cx="236" cy="352" rx="34" ry="17" transform="rotate(20 236 352)" fill="var(--lazo)"/>
+      <ellipse cx="164" cy="352" rx="20" ry="7" transform="rotate(-20 164 352)" fill="#f2668c" opacity=".7"/>
+      <ellipse cx="236" cy="352" rx="20" ry="7" transform="rotate(20 236 352)" fill="#f2668c" opacity=".7"/>
+      <circle cx="200" cy="354" r="12" fill="var(--lazo-osc)"/>
+      <circle cx="197" cy="351" r="4" fill="#f2668c" opacity=".8"/>
+    </g>
+
+    <!-- Mensaje en la envoltura -->
+    <g class="mensaje">
+      <text x="200" y="462" text-anchor="middle" font-family="Pacifico, 'Brush Script MT', cursive"
+            font-size="46" fill="var(--letras)" stroke="#b83b62" stroke-width="3" stroke-linejoin="round"
+            paint-order="stroke">Te amo</text>
+      <text x="200" y="512" text-anchor="middle" font-family="Pacifico, 'Brush Script MT', cursive"
+            font-size="40" fill="var(--letras)" stroke="#b83b62" stroke-width="3" stroke-linejoin="round"
+            paint-order="stroke">mi Kathe</text>
+    </g>
+    <text x="200" y="560" text-anchor="middle" textLength="176" lengthAdjust="spacingAndGlyphs"
+          font-family="Quicksand, 'Trebuchet MS', sans-serif" font-weight="600" font-size="13"
+          fill="var(--letras)" stroke="#b83b62" stroke-width="2" stroke-linejoin="round"
+          paint-order="stroke">(no serás espectadora mi vida)</text>
+  </svg>
+
+  <!-- Reproductor de la canción -->
+  <!-- Carta -->
+  <div id="carta" role="dialog" aria-label="Carta para Kathe">
+    <div class="marco">
+      <button id="cerrarCarta" type="button" aria-label="Cerrar carta">✕</button>
+      <div class="hoja">
+        <h2>Día 3, mi Kathe 💛</h2>
+        <p>Llegamos al último día de las flores amarillas, pero quiero que sepas que lo que siento por ti no tiene fecha de cierre.</p>
+        <p>Estos tres días te escribí desde distintos lugares de lo que siento: desde las ganas de decírtelo simple, desde lo cotidiano, y hoy desde lo que más deseo, que es un futuro entero contigo.</p>
+        <p>No sé cuánto vamos a tener que esperar todavía, pero sé que quiero seguir esperándote a ti. Quiero que sigamos construyendo esto, poquito a poco, con paciencia, con confianza y con la certeza de que vamos en la misma dirección.</p>
+        <p>Y aunque no lo dije en voz alta hasta ahora, estos tres días de flores amarillas significan algo muy puntual para mí: es mi forma de prometerte que quiero pasar el resto de mi vida a tu lado, sin condiciones.</p>
+        <p>No sé si conocías la tradición, pero da igual, porque para mí no era solo una tradición, era la manera más honesta que encontré de decirte, sin adornos, que esto que siento no es pasajero.</p>
+        <p>Más abajo dejé algunos de los sueños que quiero cumplir contigo. Ve marcando los que también quieras tú, para que sean nuestros de verdad.</p>
+        <p class="fin">Te elegiría una y otra vez, hoy y siempre. 💛🌻❤️</p>
+      </div>
+      <div id="suenos">
+        <h3>Nuestros sueños juntos 💫</h3>
+        <label><input type="checkbox" data-k="s1"><span>Casarnos</span></label>
+        <label><input type="checkbox" data-k="s2"><span>Tener nuestro propio hogar</span></label>
+        <label><input type="checkbox" data-k="s3"><span>Viajar juntos</span></label>
+        <label><input type="checkbox" data-k="s4"><span>Reírnos de cualquier tontería, siempre</span></label>
+        <label><input type="checkbox" data-k="s5"><span>Envejecer juntos, tranquilos y felices</span></label>
+        <p id="suenosNota">Toca los que también quieras cumplir tú 💛</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Jardín de piropos: toca un capullo y se abre un mensajito -->
+  <div id="jardin">
+    <button class="capullo" data-msg="Eres mi persona favorita 💛">🌼</button>
+    <button class="capullo" data-msg="Amo tu risa más de lo que imaginas">🌼</button>
+    <button class="capullo" data-msg="Contigo todo se siente más fácil">🌼</button>
+    <button class="capullo" data-msg="Eres mi lugar seguro">🌼</button>
+    <button class="capullo" data-msg="Pienso en ti más de lo que digo">🌼</button>
+    <button class="capullo" data-msg="Gracias por existir, mi Kathe">🌼</button>
+  </div>
+
+  <!-- Botones: carta y canción -->
+  <div id="musica">
+    <div id="panel"></div>
+    <div class="botones">
+      <button id="btnCarta" type="button">💌 Carta</button>
+      <button id="btnMusica" type="button">🎵 Nuestra canción</button>
+    </div>
+    <div class="botones">
+      <button id="btnFinal" type="button">🎆 Ver el gran final</button>
+    </div>
+  </div>
+
+  <div id="finalOverlay">
+    <div class="caja">
+      <p>3 días de flores amarillas,<br>1 sola promesa:<br>quiero el resto de mi vida contigo.<br>Te amo, mi Kathe. 💛🌻❤️</p>
+      <button id="cerrarFinal" type="button">Cerrar</button>
+    </div>
+  </div>
+
+<script>
+// ID de la canción en Spotify (la parte final del link: open.spotify.com/track/ESTE_ID)
+const CANCION_SPOTIFY = "6pTZ8Oy1xGKGCE4saVScoy"; // Give Me Your Forever - Zack Tabudlo
+
+(function () {
+  const btn = document.getElementById("btnMusica");
+  const panel = document.getElementById("panel");
+  let cargado = false;
+  btn.addEventListener("click", () => {
+    if (!cargado) {
+      const f = document.createElement("iframe");
+      f.src = "https://open.spotify.com/embed/track/" + CANCION_SPOTIFY + "?utm_source=generator&theme=0";
+      f.allow = "autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture";
+      f.title = "Give Me Your Forever - Zack Tabudlo";
+      panel.appendChild(f);
+      cargado = true;
+    }
+    const abrir = panel.style.display !== "block";
+    panel.style.display = abrir ? "block" : "none";
+    document.body.classList.toggle("abierto", abrir);
+    btn.textContent = abrir ? "Ocultar música" : "🎵 Nuestra canción";
+  });
+})();
+
+// Carta: se abre encima del ramo y los párrafos van apareciendo al leer
+(function () {
+  const carta = document.getElementById("carta");
+  const hoja = carta.querySelector(".hoja");
+  const btn = document.getElementById("btnCarta");
+  const parrafos = hoja.querySelectorAll("p");
+  const io = "IntersectionObserver" in window
+    ? new IntersectionObserver((entradas) => {
+        entradas.forEach((e) => {
+          if (e.isIntersecting) { e.target.classList.add("vis"); io.unobserve(e.target); }
+        });
+      }, { root: hoja, threshold: 0.15 })
+    : null;
+
+  function abrir() {
+    carta.classList.add("on");
+    hoja.scrollTop = 0;
+    btn.textContent = "Cerrar carta";
+    parrafos.forEach((p) => (io ? io.observe(p) : p.classList.add("vis")));
+  }
+  function cerrar() {
+    carta.classList.remove("on");
+    btn.textContent = "💌 Carta";
+  }
+  btn.addEventListener("click", () => (carta.classList.contains("on") ? cerrar() : abrir()));
+  document.getElementById("cerrarCarta").addEventListener("click", cerrar);
+  carta.addEventListener("click", (e) => { if (e.target === carta) cerrar(); });
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape") cerrar(); });
+})();
+
+// Jardín de piropos
+(function () {
+  let burbuja = null;
+  document.querySelectorAll(".capullo").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      if (burbuja) burbuja.remove();
+      const b = document.createElement("div");
+      b.className = "burbuja";
+      b.textContent = btn.dataset.msg;
+      document.body.appendChild(b);
+      const r = btn.getBoundingClientRect();
+      b.style.left = (r.left + r.width / 2) + "px";
+      b.style.top = r.top + "px";
+      requestAnimationFrame(() => b.classList.add("on"));
+      burbuja = b;
+      setTimeout(() => { b.classList.remove("on"); setTimeout(() => b.remove(), 250); }, 2200);
+    });
+  });
+})();
+
+// Sueños: se recuerdan solo en este dispositivo
+(function () {
+  const claves = document.querySelectorAll('#suenos input[type="checkbox"]');
+  let guardado = {};
+  try {
+    guardado = JSON.parse(localStorage.getItem("suenosKathe") || "{}");
+  } catch (e) { guardado = {}; }
+  claves.forEach((c) => {
+    if (guardado[c.dataset.k]) c.checked = true;
+    c.addEventListener("change", () => {
+      guardado[c.dataset.k] = c.checked;
+      try { localStorage.setItem("suenosKathe", JSON.stringify(guardado)); } catch (e) {}
+    });
+  });
+})();
+
+// Gran final: confeti + mensaje
+(function () {
+  const btn = document.getElementById("btnFinal");
+  const overlay = document.getElementById("finalOverlay");
+  const cerrar = document.getElementById("cerrarFinal");
+  const colores = ["#ffd21f", "#f38fa9", "#d63b66", "#ffb347", "#ffe066"];
+  function confeti() {
+    const reducido = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reducido) return;
+    for (let i = 0; i < 60; i++) {
+      const c = document.createElement("span");
+      c.className = "confeti";
+      c.textContent = Math.random() > .5 ? "🌼" : "💛";
+      c.style.left = Math.random() * 100 + "vw";
+      c.style.fontSize = 10 + Math.random() * 14 + "px";
+      c.style.setProperty("--dx", (Math.random() * 200 - 100) + "px");
+      c.style.setProperty("--rot", (Math.random() * 540 - 270) + "deg");
+      c.style.animationDuration = 2.2 + Math.random() * 1.8 + "s";
+      document.body.appendChild(c);
+      setTimeout(() => c.remove(), 4200);
+    }
+  }
+  btn.addEventListener("click", () => {
+    confeti();
+    overlay.classList.add("on");
+  });
+  cerrar.addEventListener("click", () => overlay.classList.remove("on"));
+  overlay.addEventListener("click", (e) => { if (e.target === overlay) overlay.classList.remove("on"); });
+})();
+
+// Luciérnagas doradas
+if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+  for (let i = 0; i < 16; i++) {
+    const f = document.createElement("span");
+    f.className = "luciernaga";
+    f.style.left = Math.random() * 96 + "vw";
+    f.style.bottom = "-10px";
+    f.style.setProperty("--dx", (Math.random() * 80 - 40).toFixed(0) + "px");
+    f.style.animationDuration = 6 + Math.random() * 6 + "s";
+    f.style.animationDelay = Math.random() * 8 + "s";
+    document.body.appendChild(f);
+  }
+}
+
+(function () {
+  const NS = "http://www.w3.org/2000/svg";
+  const el = (tag, attrs, parent) => {
+    const e = document.createElementNS(NS, tag);
+    for (const k in attrs) e.setAttribute(k, attrs[k]);
+    if (parent) parent.appendChild(e);
+    return e;
+  };
+  const ramo = document.getElementById("ramo");
+  const BASE = [200, 440];
+
+  // [x, y, escala, rotación]
+  const flores = [
+    [200, 80, 1.2, 0],
+    [110, 130, 1.0, -14],
+    [290, 130, 1.0, 12],
+    [200, 168, 0.98, 8],
+    [55, 216, 0.88, 16],
+    [345, 216, 0.88, -12],
+    [140, 210, 0.9, 20],
+    [260, 210, 0.9, -18],
+    [200, 250, 0.82, 5],
+    [90, 268, 0.78, 22],
+    [310, 268, 0.78, -20]
+  ];
+
+  // Tallos
+  flores.forEach(([x, y]) => {
+    el("path", {
+      d: `M${x} ${y} C${x} ${y + 130} ${BASE[0]} ${BASE[1] - 130} ${BASE[0]} ${BASE[1]}`,
+      fill: "none", stroke: "#3f8a3a", "stroke-width": 5, "stroke-linecap": "round"
+    }, ramo);
+  });
+
+  // Hojas [x, y, rotación, largo]
+  [[150,325,-28,72],[250,325,28,72],[110,318,-55,64],[290,318,55,64],
+   [185,332,-12,80],[215,332,12,80],[70,302,-70,50],[330,302,70,50]].forEach(([x, y, r, L]) => {
+    const g = el("g", { transform: `translate(${x} ${y}) rotate(${r})` }, ramo);
+    el("path", { d: `M0 0 Q${L * .22} ${-L * .5} 0 ${-L} Q${-L * .22} ${-L * .5} 0 0Z`, fill: "#3f8a3a" }, g);
+    el("path", { d: `M0 0 L0 ${-L * .85}`, stroke: "#2f6d2c", "stroke-width": 1.5, fill: "none" }, g);
+  });
+
+  // Florecitas blancas de relleno
+  for (let i = 0; i < 34; i++) {
+    const a = Math.random() * Math.PI * 2, d = 60 + Math.random() * 120;
+    const x = 200 + Math.cos(a) * d * 1.3, y = 190 + Math.sin(a) * d * 0.7;
+    if (y > 300) continue;
+    el("circle", { cx: x.toFixed(1), cy: y.toFixed(1), r: (2 + Math.random() * 2).toFixed(1), fill: "#fffaf0", opacity: .95 }, ramo);
+  }
+
+  // Flores: dos capas de pétalos + centro con semillas
+  flores.forEach(([x, y, s, r]) => {
+    const g = el("g", { transform: `translate(${x} ${y}) scale(${s}) rotate(${r})` }, ramo);
+    for (let i = 0; i < 14; i++) {
+      el("ellipse", { cx: 0, cy: -21, rx: 8, ry: 17, fill: "url(#pet2)", stroke: "#e39a00", "stroke-width": 1,
+        transform: `rotate(${i * 360 / 14})` }, g);
+    }
+    for (let i = 0; i < 14; i++) {
+      el("ellipse", { cx: 0, cy: -16, rx: 6, ry: 12, fill: "url(#pet1)",
+        transform: `rotate(${i * 360 / 14 + 360 / 28})` }, g);
+    }
+    el("circle", { r: 12, fill: "#6b3d10" }, g);
+    el("circle", { r: 8, fill: "#8a5a1c" }, g);
+    for (let i = 0; i < 8; i++) {
+      const a = i * Math.PI / 4;
+      el("circle", { cx: (Math.cos(a) * 5).toFixed(1), cy: (Math.sin(a) * 5).toFixed(1), r: 1.3, fill: "#3d2208" }, g);
+    }
+    el("circle", { r: 1.5, fill: "#3d2208" }, g);
+  });
+
+  // Pétalos y corazones que caen suavemente
+  if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    // Lluvia de palabras
+    const frases = ["te amo", "te adoro", "eres lo mejor", "eres mi todo", "mi vida"];
+    const colores = ["#c2185b", "#d63b66", "#b8570a", "#8a4b00", "#e0456f", "#a92148"];
+    for (let i = 0; i < 24; i++) {
+      const p = document.createElement("span");
+      const dur = 9 + Math.random() * 7;
+      p.className = "palabra";
+      p.textContent = frases[i % frases.length];
+      p.style.left = Math.random() * 78 + "vw";
+      p.style.fontSize = 16 + Math.random() * 15 + "px";
+      p.style.color = colores[Math.floor(Math.random() * colores.length)];
+      p.style.setProperty("--dx", (Math.random() * 60 - 30).toFixed(0) + "px");
+      p.style.animationDuration = dur + "s";
+      p.style.animationDelay = -Math.random() * dur + "s";
+      document.body.appendChild(p);
+    }
+
+    const items = ["🌼", "💛", "🌻", "💛"];
+    for (let i = 0; i < 8; i++) {
+      const c = document.createElement("span");
+      c.className = "cae";
+      c.textContent = items[i % items.length];
+      c.style.left = Math.random() * 96 + "vw";
+      c.style.fontSize = 14 + Math.random() * 16 + "px";
+      c.style.animationDuration = 8 + Math.random() * 7 + "s";
+      c.style.animationDelay = Math.random() * 10 + "s";
+      document.body.appendChild(c);
+    }
+  }
+})();
+</script>
+</body>
+</html>
