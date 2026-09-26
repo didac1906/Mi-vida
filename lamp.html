@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Pull the cord</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Work+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-off: #0a0d14;
+    --bg-on-1: #2b1a0d;
+    --bg-on-2: #0a0d14;
+    --cord: #4a5060;
+    --bulb-off: #3a3f4c;
+    --glow: #ffb15c;
+    --glow-soft: #ff8a4d;
+    --paper: #f4ead9;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    box-sizing: border-box;
+  }
+  *{ box-sizing: border-box; }
+  html,body{
+    height:100%;
+    margin:0;
+    background: var(--bg-off);
+    overflow: hidden;
+    font-family: 'Work Sans', sans-serif;
+  }
+  body{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    transition: background 1.1s ease;
+  }
+  body.is-on{
+    background: radial-gradient(ellipse at 42% 28%, var(--bg-on-1) 0%, var(--bg-on-2) 60%);
+  }
+
+  .stage{
+    position:relative;
+    width:100%;
+    height:100%;
+    max-width: 720px;
+  }
+
+  /* ambient glow behind bulb */
+  .ambient{
+    position:absolute;
+    top:16%;
+    left:50%;
+    width:70vmax;
+    height:70vmax;
+    transform: translate(-50%,-40%);
+    border-radius:50%;
+    background: radial-gradient(circle, rgba(255,177,92,0.35) 0%, rgba(255,177,92,0) 65%);
+    opacity:0;
+    transition: opacity 1.2s ease;
+    pointer-events:none;
+  }
+  body.is-on .ambient{ opacity:1; }
+
+  .fixture{
+    position:absolute;
+    top:0;
+    left:50%;
+    transform: translateX(-50%);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+  }
+  .rail{
+    width:70px;
+    height:8px;
+    background:#20242e;
+    border-radius:3px;
+  }
+  .wire{
+    width:2px;
+    height:120px;
+    background: var(--cord);
+  }
+  .bulb-wrap{
+    position:relative;
+    margin-top:-2px;
+  }
+  .bulb{
+    width:64px;
+    height:80px;
+    border-radius: 50% 50% 46% 46% / 55% 55% 45% 45%;
+    background: var(--bulb-off);
+    box-shadow: none;
+    transition: background 0.9s ease, box-shadow 0.9s ease;
+  }
+  body.is-on .bulb{
+    background: radial-gradient(circle at 40% 35%, #fff3d6 0%, var(--glow) 45%, var(--glow-soft) 100%);
+    box-shadow:
+      0 0 30px 10px rgba(255,177,92,0.55),
+      0 0 90px 40px rgba(255,138,77,0.25);
+  }
+  .base{
+    width:20px;
+    height:12px;
+    background:#20242e;
+    margin:0 auto;
+    border-radius:0 0 3px 3px;
+  }
+
+  /* pull cord */
+  .cord{
+    position:absolute;
+    top:180px;
+    left:50%;
+    transform: translateX(-50%);
+    width:2px;
+    height:150px;
+    background: var(--cord);
+    cursor: pointer;
+    transform-origin: top center;
+    transition: transform 0.35s cubic-bezier(.34,1.56,.64,1);
+  }
+  .cord.pulling{ transform: translateX(-50%) scaleY(1.12); }
+  .knob{
+    position:absolute;
+    bottom:-9px;
+    left:50%;
+    transform: translateX(-50%);
+    width:18px;
+    height:18px;
+    border-radius:50%;
+    background: var(--cord);
+    box-shadow: inset 0 -2px 3px rgba(0,0,0,0.4);
+  }
+  .cord:hover .knob{ background:#5b6376; }
+  .hit-area{
+    position:absolute;
+    top:-20px; left:50%;
+    transform: translateX(-50%);
+    width:60px; height:200px;
+  }
+
+  .hint{
+    position:absolute;
+    top:360px;
+    left:50%;
+    transform: translateX(-50%);
+    text-align:center;
+    color: rgba(230,225,215,0.55);
+    font-size: 14px;
+    letter-spacing: 0.02em;
+    line-height: 1.5;
+    width: 260px;
+    transition: color 0.9s ease;
+  }
+  body.is-on .hint{ color: rgba(255,220,180,0.6); }
+
+  /* love message */
+  .message{
+    position:absolute;
+    top:44%;
+    left:50%;
+    transform: translate(-50%,-50%) scale(0.9);
+    opacity:0;
+    text-align:center;
+    pointer-events:none;
+    z-index:2;
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+  body.is-on .message.show{
+    opacity:1;
+    transform: translate(-50%,-50%) scale(1);
+  }
+  .heart{
+    width:46px;
+    height:46px;
+    margin:0 auto 14px;
+    position:relative;
+    transform: rotate(45deg);
+    background: var(--glow-soft);
+    animation: beat 1.6s ease-in-out infinite;
+    filter: drop-shadow(0 0 14px rgba(255,138,77,0.6));
+  }
+  .heart::before, .heart::after{
+    content:"";
+    position:absolute;
+    width:46px;
+    height:46px;
+    border-radius:50%;
+    background: var(--glow-soft);
+  }
+  .heart::before{ top:-23px; left:0; }
+  .heart::after{ top:0; left:-23px; }
+  @keyframes beat{
+    0%,100%{ transform: rotate(45deg) scale(1); }
+    50%{ transform: rotate(45deg) scale(1.12); }
+  }
+  .words{
+    font-family:'Caveat', cursive;
+    font-weight:700;
+    font-size: clamp(36px, 9vw, 64px);
+    color: var(--paper);
+    text-shadow: 0 0 18px rgba(255,177,92,0.5);
+    letter-spacing: 0.01em;
+  }
+
+  .rain{
+    position:absolute;
+    inset:0;
+    overflow:hidden;
+    pointer-events:none;
+    z-index:1;
+  }
+  .drop{
+    position:absolute;
+    top:-40px;
+    font-family:'Caveat', cursive;
+    font-weight:600;
+    color: var(--paper);
+    text-shadow: 0 0 10px rgba(255,177,92,0.45);
+    white-space:nowrap;
+    opacity:0;
+    animation: fall linear forwards;
+  }
+  @keyframes fall{
+    0%{ opacity:0; transform: translateY(0) rotate(0deg); }
+    8%{ opacity:0.85; }
+    90%{ opacity:0.85; }
+    100%{ opacity:0; transform: translateY(115vh) rotate(8deg); }
+  }
+
+  .credit{
+    position:absolute;
+    bottom: calc(28px + env(safe-area-inset-bottom, 0px));
+    left:50%;
+    transform: translateX(-50%);
+    color: rgba(230,225,215,0.3);
+    font-size: 12px;
+    letter-spacing: 0.08em;
+  }
+
+  @media (max-width: 420px){
+    .fixture{ top:6%; }
+    .cord{ top:150px; height:120px; }
+    .hint{ top:295px; }
+    .message{ top:48%; }
+  }
+</style>
+</head>
+<body>
+  <div class="stage">
+    <div class="ambient"></div>
+
+    <div class="fixture">
+      <div class="rail"></div>
+      <div class="wire"></div>
+      <div class="bulb-wrap">
+        <div class="bulb"></div>
+        <div class="base"></div>
+      </div>
+    </div>
+
+    <div class="cord" id="cord">
+      <div class="hit-area" id="hitArea"></div>
+      <div class="knob"></div>
+    </div>
+
+    <p class="hint" id="hint">Presionar</p>
+
+    <div class="rain" id="rain"></div>
+
+    <div class="message" id="message">
+      <div class="heart"></div>
+      <div class="words">I love you</div>
+    </div>
+
+    <div class="credit">presionar</div>
+  </div>
+
+<script>
+  const body = document.body;
+  const cord = document.getElementById('cord');
+  const hitArea = document.getElementById('hitArea');
+  const hint = document.getElementById('hint');
+  const message = document.getElementById('message');
+
+  let isOn = false;
+  let animating = false;
+
+  const rain = document.getElementById('rain');
+  const prettyWords = ['preciosa','linda','hermosa','bonita','amor','mi cielo','encantadora','adorable','mi vida','dulce','mi amor','radiante','especial','mi sol','divina','cariño','mi todo','preciosura'];
+  let rainTimer = null;
+
+  function spawnWord(){
+    const el = document.createElement('div');
+    el.className = 'drop';
+    el.textContent = prettyWords[Math.floor(Math.random() * prettyWords.length)];
+    el.style.left = (Math.random() * 86 + 4) + '%';
+    el.style.fontSize = (18 + Math.random() * 16) + 'px';
+    const duration = 5 + Math.random() * 3;
+    el.style.animationDuration = duration + 's';
+    rain.appendChild(el);
+    setTimeout(() => el.remove(), duration * 1000 + 100);
+  }
+
+  function startRain(){
+    if (rainTimer) return;
+    spawnWord();
+    rainTimer = setInterval(spawnWord, 450);
+  }
+
+  function stopRain(){
+    clearInterval(rainTimer);
+    rainTimer = null;
+    rain.innerHTML = '';
+  }
+
+  function pull(){
+    if (animating) return;
+    animating = true;
+
+    cord.classList.add('pulling');
+    isOn = !isOn;
+
+    hint.textContent = isOn ? 'Presionar de nuevo' : 'Presionar';
+
+    setTimeout(() => {
+      body.classList.toggle('is-on', isOn);
+      if (isOn) {
+        setTimeout(() => { message.classList.add('show'); startRain(); }, 500);
+      } else {
+        message.classList.remove('show');
+        stopRain();
+      }
+    }, 120);
+
+    setTimeout(() => {
+      cord.classList.remove('pulling');
+      animating = false;
+    }, 380);
+  }
+
+  hitArea.addEventListener('click', pull);
+</script>
+</body>
+</html>
